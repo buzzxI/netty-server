@@ -12,9 +12,17 @@ public class DiscardServerHandler extends ChannelInboundHandlerAdapter {
     // this method will be called after server receive a message from client
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        // discard received data
-        ((ByteBuf)msg).release();
-//        ReferenceCountUtil.release(msg);
+        ByteBuf in = (ByteBuf)msg;
+        try {
+            while (in.isReadable()) {
+                System.out.print((char)in.readByte());
+                System.out.flush();
+            }
+        } finally {
+            // release the buffer
+            ReferenceCountUtil.release(msg);
+            // or in.release();
+        }
     }
 
     @Override

@@ -9,10 +9,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-public class DiscardServer {
-    private int port;
+public class Server {
+    private final int port;
 
-    public DiscardServer(int port) {
+    public Server(int port) {
         this.port = port;
     }
 
@@ -33,7 +33,7 @@ public class DiscardServer {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             // use pipeline to describe operations for SocketChannel
-                            socketChannel.pipeline().addLast(new DiscardServerHandler());
+                            socketChannel.pipeline().addLast(new TimeServerHandler());
                         }
                     })
                     // this parameter has the same meaning as @param backlog in ServerSocket (maximum queue length for incoming connection indications)
