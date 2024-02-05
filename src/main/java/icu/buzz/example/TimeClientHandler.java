@@ -11,16 +11,9 @@ public class TimeClientHandler extends ChannelInboundHandlerAdapter {
     // read time and close the connection
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf)msg;
-        try {
-            long currentTimeMillis = buf.readUnsignedInt() * 1000L;
-//            long currentTimeMillis = (buf.readUnsignedInt() - 2208988800L) * 1000L;
-            System.out.println(new Date(currentTimeMillis));
-            ctx.close();
-        } finally {
-            ReferenceCountUtil.release(buf);
-            // or buf.release();
-        }
+        UnixTime time = (UnixTime)msg;
+        System.out.println(time);
+        ctx.close();
     }
 
     @Override

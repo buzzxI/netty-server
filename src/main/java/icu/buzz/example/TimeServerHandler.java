@@ -15,14 +15,9 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
     // this method will be invoked after connection established => send a 32-bit integer to client
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        // ctx.alloc() returns a ByteBufAllocator
-        ByteBuf timeBuffer = ctx.alloc().buffer(4);
-        timeBuffer.writeInt((int)(System.currentTimeMillis() / 1000L));
-//        timeBuffer.writeInt((int)(System.currentTimeMillis() / 1000L + 2208988800L));
-        // ByteBuf in netty does not need a flip (it has two pointers: readerIndex and writerIndex)
+    public void channelActive(ChannelHandlerContext ctx) {
         // future means IO operation may not be finished yet (do not close channel after writeAndFlush)
-        ChannelFuture future = ctx.writeAndFlush(timeBuffer);
+        ChannelFuture future = ctx.writeAndFlush(new UnixTime());
         // add a listener to close channel after writeAndFlush
         future.addListener(ChannelFutureListener.CLOSE);
     }

@@ -25,16 +25,16 @@ public class TimeClient {
                     // NioSocketChannel is used as SocketChannel at client side
                     .channel(NioSocketChannel.class)
                     // client-side SocketChannel does not have a parent
-                    .option(ChannelOption.SO_KEEPALIVE, true);
-            // configure the handler for SocketChannel
-            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                protected void initChannel(SocketChannel ch) throws Exception {
-                    // use pipeline to describe operations for SocketChannel
-                    ch.pipeline().addLast(new TimeClientHandler());
-                }
-            });
-
+                    .option(ChannelOption.SO_KEEPALIVE, true)
+                    // configure the handler for SocketChannel
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            // use pipeline to describe operations for SocketChannel
+                            // add a TimeDecoder to deal with fragmentation issue
+                            ch.pipeline().addLast(new TimeDecoder(), new TimeClientHandler());
+                        }
+                    });
             // use connect() on client side (bind on server side)
             ChannelFuture future = bootstrap.connect(host, port).sync();
             // wait until the connection is closed

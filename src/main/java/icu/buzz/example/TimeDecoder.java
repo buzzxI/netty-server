@@ -17,7 +17,8 @@ public class TimeDecoder extends ByteToMessageDecoder {
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         // just return for short counts
         if (in.readableBytes() < 4) return;
+
         // in will discard the read part of cumulated bytes
-        out.add(in.readBytes(4));
+        out.add(new UnixTime(in.readUnsignedInt()));
     }
 }

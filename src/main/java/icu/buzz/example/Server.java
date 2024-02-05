@@ -33,7 +33,7 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             // use pipeline to describe operations for SocketChannel
-                            socketChannel.pipeline().addLast(new TimeServerHandler());
+                            socketChannel.pipeline().addLast(new TimeEncoder(), new TimeServerHandler());
                         }
                     })
                     // this parameter has the same meaning as @param backlog in ServerSocket (maximum queue length for incoming connection indications)
