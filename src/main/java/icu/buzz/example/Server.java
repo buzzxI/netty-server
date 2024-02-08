@@ -1,13 +1,11 @@
 package icu.buzz.example;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpServerCodec;
 
 public class Server {
     private final int port;
@@ -33,7 +31,12 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             // use pipeline to describe operations for SocketChannel
-                            socketChannel.pipeline().addLast(new TimeEncoder(), new TimeServerHandler());
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            // HttpServerCodec is a combination of HTTP encoder and decoder
+//                            pipeline.addLast("Http coder_decoder", new HttpServerCodec())
+//                                    .addLast("Http handler", new HttpServerHandler());
+                            pipeline.addLast(new EchoServerHandler());
+//                            socketChannel.pipeline().addLast(new TimeEncoder(), new TimeServerHandler());
                         }
                     })
                     // this parameter has the same meaning as @param backlog in ServerSocket (maximum queue length for incoming connection indications)
